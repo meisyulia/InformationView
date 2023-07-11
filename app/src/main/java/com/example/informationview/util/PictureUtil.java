@@ -17,8 +17,9 @@ public class PictureUtil {
         Picasso picasso = new Picasso.Builder(context)
                 .build();
         picasso.load(imageUrl).placeholder(placeholder)
-                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE) // 禁用内存缓存
-                .networkPolicy(NetworkPolicy.NO_CACHE) // 禁用网络缓存
                 .into(imageView);
+
+                        /*.memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE) // 禁用内存缓存
+                .networkPolicy(NetworkPolicy.NO_CACHE) // 禁用网络缓存*/
     }
 }
