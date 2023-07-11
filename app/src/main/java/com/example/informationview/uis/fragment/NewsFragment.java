@@ -22,6 +22,7 @@ import com.cy.tablayoutniubility.TabMediatorVp2;
 import com.cy.tablayoutniubility.TabMediatorVp2NoScroll;
 import com.cy.tablayoutniubility.TabViewHolder;
 import com.example.informationview.R;
+import com.example.informationview.adapter.NewsPagerAdapter;
 import com.example.informationview.bean.NewsBean;
 import com.example.informationview.databinding.FragmentNewsBinding;
 
@@ -84,7 +85,7 @@ public class NewsFragment extends BaseFragment{
 
     @Override
     protected void initView() {
-        adapterVp2 = new FragPageAdapterVp2<String>(requireActivity()) {
+        /*adapterVp2 = new FragPageAdapterVp2<String>(requireActivity()) {
             @Override
             public void bindDataToTab(TabViewHolder holder, int position, String bean, boolean isSelected) {
                 TextView tv_item = holder.getView(R.id.tv_item);
@@ -113,7 +114,10 @@ public class NewsFragment extends BaseFragment{
         tabAdapter = new TabMediatorVp2<String>(mBinding.tabLayout,
                 mBinding.viewPager).setAdapter(adapterVp2);
         tabAdapter.add(mTitle);
-        adapterVp2.add(mTitle);
+        adapterVp2.add(mTitle);*/
+        NewsPagerAdapter newsPagerAdapter = new NewsPagerAdapter(getChildFragmentManager(), mTopic);
+        mBinding.viewPager.setAdapter(newsPagerAdapter);
+        mBinding.tabLayoutNews.setupWithViewPager(mBinding.viewPager);
     }
 
     @Override

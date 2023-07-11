@@ -10,6 +10,7 @@ import com.example.informationview.bean.NewsBean;
 import com.example.informationview.bean.WeatherBean;
 import com.example.informationview.util.common.GsonUtil;
 import com.example.informationview.util.common.HttpUtil;
+import com.example.informationview.util.common.ThreadPool;
 
 import java.util.List;
 import java.util.Map;
@@ -48,7 +49,7 @@ public class ApiNetViewModel extends ViewModel {
      * @param params
      */
     public void newsApiExecute(String apiUrl, Map<String,String> params){
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 String paramsStr = HttpUtil.urlencode(params);
@@ -74,12 +75,38 @@ public class ApiNetViewModel extends ViewModel {
                 }
 
             }
-        }).start();
-
+        }).start();*/
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String paramsStr = HttpUtil.urlencode(params);
+                String response = HttpUtil.doGet(apiUrl, paramsStr);
+                Log.i(TAG, "newsApiExecute: response="+response);
+                if (!TextUtils.isEmpty(response)){
+                    NewsBean newsBean = GsonUtil.parserJsonToArrayBean(response, NewsBean.class);
+                    NewsBean.ResultBean result = newsBean.getResult();
+                    if (newsBean.getError_code()==0){
+                        List<NewsBean.ResultBean.DataBean> data = result.getData();
+                        if (resultCallback != null) {
+                            resultCallback.onSuccess(data);
+                        }
+                    }else{
+                        if (resultCallback != null) {
+                            resultCallback.onFail("error_code="+newsBean.getError_code()+",reason="+newsBean.getReason());
+                        }
+                    }
+                }else{
+                    if (resultCallback != null) {
+                        resultCallback.onFail("请求数据失败！");
+                    }
+                }
+            }
+        };
+        ThreadPool.getInstance().getThreadPoolExecutor().execute(runnable);
     }
 
     public void weatherExecute(String apiUrl,Map<String,String> params){
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 String paramsStr = HttpUtil.urlencode(params);
@@ -104,11 +131,38 @@ public class ApiNetViewModel extends ViewModel {
                     }
                 }
             }
-        }).start();
+        }).start();*/
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String paramsStr = HttpUtil.urlencode(params);
+                String response = HttpUtil.doGet(apiUrl, paramsStr);
+                Log.i(TAG, "weatherExecute: response="+response);
+                if (!TextUtils.isEmpty(response)){
+                    WeatherBean weatherBean = GsonUtil.parserJsonToArrayBean(response, WeatherBean.class);
+                    if (weatherBean.getError_code()==0){
+                        WeatherBean.ResultBean resultBean = weatherBean.getResult();
+                        if (weatherCallback != null) {
+                            weatherCallback.onSuccess(resultBean);
+                        }
+                    }else{
+                        if (weatherCallback != null) {
+                            weatherCallback.onFail("查询失败！原因是："+weatherBean.getReason());
+                        }
+                    }
+
+                }else{
+                    if (weatherCallback != null) {
+                        weatherCallback.onFail("查询失败！");
+                    }
+                }
+            }
+        };
+        ThreadPool.getInstance().getThreadPoolExecutor().execute(runnable);
     }
 
     public void lifeExecute(String apiUrl,Map<String,String> params){
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             @Override
             public void run() {
                 String paramsStr = HttpUtil.urlencode(params);
@@ -133,7 +187,34 @@ public class ApiNetViewModel extends ViewModel {
                     }
                 }
             }
-        }).start();
+        }).start();*/
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String paramsStr = HttpUtil.urlencode(params);
+                String response = HttpUtil.doGet(apiUrl, paramsStr);
+                Log.i(TAG, "lifeExecute: response="+response);
+                if (!TextUtils.isEmpty(response)){
+                    LifeResultBean lifeResultBean = GsonUtil.parserJsonToArrayBean(response, LifeResultBean.class);
+                    if (lifeResultBean.getError_code()==0){
+                        LifeResultBean.ResultBean resultBean = lifeResultBean.getResult();
+                        if (lifeCallback != null) {
+                            lifeCallback.onSuccess(resultBean);
+                        }
+                    }else{
+                        if (lifeCallback != null) {
+                            lifeCallback.onFail("查询失败！原因是："+lifeResultBean.getReason());
+                        }
+                    }
+
+                }else{
+                    if (lifeCallback != null) {
+                        lifeCallback.onFail("查询失败！");
+                    }
+                }
+            }
+        };
+        ThreadPool.getInstance().getThreadPoolExecutor().execute(runnable);
     }
 
 

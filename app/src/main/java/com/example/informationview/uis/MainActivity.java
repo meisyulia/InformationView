@@ -96,11 +96,11 @@ public class MainActivity extends BaseActivity {
             weatherFragment = null;
         }*/
 
-         try {
+        /* try {
             getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
